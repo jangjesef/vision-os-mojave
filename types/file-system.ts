@@ -66,7 +66,7 @@ export const initialFileSystem: FileSystem = {
       type: "folder",
       parent: "desktop",
       modified: new Date().toLocaleDateString(),
-      icon: "/icons/music.webp",
+      icon: "/icons/folder.svg",
     },
     "documents-1": {
       id: "documents-1",
@@ -76,7 +76,7 @@ export const initialFileSystem: FileSystem = {
       extension: "pdf",
       size: "2.5 MB",
       modified: new Date().toLocaleDateString(),
-      path: "/documents/studio-vision-brochure.pdf",
+      path: "/documents/yung98-os-deck.pdf",
       icon: "/icons/pdf-icon.webp",
     },
     "documents-2": {
@@ -367,7 +367,7 @@ export const initialFileSystem: FileSystem = {
       name: "Music Player",
       type: "app",
       parent: "applications",
-      icon: "/icons/music.webp",
+      icon: "/icons/music.svg",
       modified: new Date().toLocaleDateString(),
     },
     "applications-4": {

@@ -13,13 +13,7 @@ interface BeatFile {
   price?: string
   leasePrice?: string
   exclusivePrice?: string
-  category?: string
-  bpm?: number
-  key?: string
-  mood?: string
   cover?: string
-  description?: string
-  preset?: string
 }
 
 interface BeatMetadata {
@@ -29,13 +23,7 @@ interface BeatMetadata {
   price?: string
   leasePrice?: string
   exclusivePrice?: string
-  category?: string
-  bpm?: number
-  key?: string
-  mood?: string
   cover?: string
-  description?: string
-  preset?: string
 }
 
 const AUDIO_EXTENSIONS = new Set([".wav", ".mp3", ".m4a", ".ogg", ".flac", ".aiff", ".aac"])
@@ -85,13 +73,7 @@ export async function GET() {
             price: metadata.price,
             leasePrice: metadata.leasePrice,
             exclusivePrice: metadata.exclusivePrice,
-            category: metadata.category,
-            bpm: metadata.bpm,
-            key: metadata.key,
-            mood: metadata.mood,
             cover: metadata.cover,
-            description: metadata.description,
-            preset: metadata.preset,
           } satisfies BeatFile
         }),
     )

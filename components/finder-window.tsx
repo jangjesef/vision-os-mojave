@@ -151,7 +151,18 @@ export function FinderWindow({
 
   const getFileIcon = (file: FileItem) => {
     if (file.icon) {
-      return <img src={file.icon || "/placeholder.svg"} alt={file.name} className="w-10 h-10" />
+      return (
+        <img
+          src={file.icon || "/placeholder.svg"}
+          alt={file.name}
+          className="w-10 h-10"
+          onError={(e) => {
+            const fallback = "/placeholder.svg"
+            if (e.currentTarget.src.endsWith(fallback)) return
+            e.currentTarget.src = fallback
+          }}
+        />
+      )
     }
 
     if (file.type === "folder") {
@@ -244,7 +255,6 @@ export function FinderWindow({
       }
 
       if (
-        currentLocation === "portfolio" ||
         currentLocation === "photography" ||
         currentLocation === "design" ||
         currentLocation === "video" ||
@@ -263,7 +273,7 @@ export function FinderWindow({
       <div className="flex items-center text-xs text-white/70 px-4 py-1">
         <Home className="h-3 w-3 mr-1" />
         {pathParts.map((part, index) => (
-          <div key={part} className="flex items-center">
+          <div key={`${part}-${index}`} className="flex items-center">
             {index > 0 && <ChevronRight className="h-3 w-3 mx-1" />}
             <button className="hover:text-white capitalize" onClick={() => onNavigate(part)}>
               {part}

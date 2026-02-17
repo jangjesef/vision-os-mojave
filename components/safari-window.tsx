@@ -23,9 +23,6 @@ import {
   Camera,
   Video,
   Palette,
-  Globe,
-  Smartphone,
-  Megaphone,
   Check,
   CreditCard,
 } from "lucide-react"
@@ -54,9 +51,7 @@ interface Tab {
 interface Service {
   id: string
   name: string
-  description: string
   image: string
-  category: string
   leasePrice: string
   exclusivePrice: string
 }
@@ -78,12 +73,7 @@ interface RepoBeatFile {
   price?: string
   leasePrice?: string
   exclusivePrice?: string
-  category?: string
-  bpm?: number
-  key?: string
-  mood?: string
   cover?: string
-  description?: string
 }
 
 // Add a tooltip component for guiding users
@@ -101,73 +91,6 @@ const ServiceTooltip = ({
         <button onClick={onClose} className="text-white/80 hover:text-white">
           <X className="h-4 w-4" />
         </button>
-      </div>
-    </div>
-  )
-}
-
-// Add a beat category explanation component
-const CategoryExplanation = ({
-  category,
-}: {
-  category: string
-}) => {
-  const getCategoryInfo = () => {
-    switch (category) {
-      case "trap":
-        return {
-          title: "Trap Beats",
-          description:
-            "Heavy 808s, dark melodies, and hard drums built for aggressive flows and club energy.",
-          icon: <Camera className="h-6 w-6" />,
-        }
-      case "drill":
-        return {
-          title: "Drill Beats",
-          description:
-            "Sliding bass, menacing bounce, and raw textures inspired by UK/NY drill movement.",
-          icon: <Palette className="h-6 w-6" />,
-        }
-      case "rnb":
-        return {
-          title: "R&B Vibes",
-          description:
-            "Smooth chord progressions, warm bass, and late-night bounce for melodic records.",
-          icon: <Video className="h-6 w-6" />,
-        }
-      case "boom-bap":
-        return {
-          title: "Boom Bap",
-          description:
-            "Dusty drums, soul chops, and classic head-nod grooves for timeless rap cuts.",
-          icon: <Globe className="h-6 w-6" />,
-        }
-      case "afro":
-        return {
-          title: "Afro Bounce",
-          description:
-            "Rhythmic bounce, bright percussion, and melodic pockets for global crossover records.",
-          icon: <Megaphone className="h-6 w-6" />,
-        }
-      default:
-        return {
-          title: "All Beats",
-          description: "Browse the full YUNG98 catalog, filter by vibe, and build your crate.",
-          icon: <Smartphone className="h-6 w-6" />,
-        }
-    }
-  }
-
-  const info = getCategoryInfo()
-
-  return (
-    <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 mb-6 border border-white/10">
-      <div className="flex items-center gap-3">
-        <div className="bg-blue-500/20 p-3 rounded-full text-blue-400">{info.icon}</div>
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-white mb-1">{info.title}</h3>
-          <p className="text-sm text-white/70">{info.description}</p>
-        </div>
       </div>
     </div>
   )
@@ -235,23 +158,6 @@ const ServiceCard = ({
 }) => {
   const [selectedLicense, setSelectedLicense] = useState<"Lease" | "Exclusive">("Lease")
 
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case "trap":
-        return <Camera className="h-5 w-5" />
-      case "drill":
-        return <Palette className="h-5 w-5" />
-      case "rnb":
-        return <Video className="h-5 w-5" />
-      case "boom-bap":
-        return <Globe className="h-5 w-5" />
-      case "afro":
-        return <Megaphone className="h-5 w-5" />
-      default:
-        return <Smartphone className="h-5 w-5" />
-    }
-  }
-
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:shadow-xl hover:-translate-y-1">
       <div className="h-48 overflow-hidden">
@@ -259,17 +165,13 @@ const ServiceCard = ({
           src={service.image || "/placeholder.svg?height=192&width=384"}
           alt={service.name}
           className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          onError={(e) => {
+            e.currentTarget.src = "/images/album-cover-1.jpg"
+          }}
         />
       </div>
       <div className="p-6">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
-            {getCategoryIcon(service.category)}
-          </div>
-          <span className="text-sm text-gray-500 capitalize">{service.category}</span>
-        </div>
-        <h3 className="text-xl font-bold text-gray-800 mb-2">{service.name}</h3>
-        <p className="text-gray-600 mb-4">{service.description}</p>
+        <h3 className="text-xl font-bold text-gray-800 mb-4">{service.name}</h3>
         <div className="grid grid-cols-2 gap-2 mb-4">
           <button
             onClick={() => setSelectedLicense("Lease")}
@@ -360,7 +262,7 @@ export function SafariWindow({
       id: "tab1",
       title: "YUNG98 OS - Beat Store",
       url: "https://yung98.com/beats",
-      favicon: "/icons/studio-vision-favicon.png",
+      favicon: "/icons/safari.webp",
       isActive: true,
     },
   ])
@@ -370,7 +272,6 @@ export function SafariWindow({
   const [canGoBack, setCanGoBack] = useState(false)
   const [canGoForward, setCanGoForward] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState("all")
   const [services, setServices] = useState<Service[]>([])
   const [cart, setCart] = useState<CartItem[]>([])
   const [showCart, setShowCart] = useState(false)
@@ -397,16 +298,6 @@ export function SafariWindow({
       .replace(/\b\w/g, (char) => char.toUpperCase())
   }
 
-  const detectCategory = (fileName: string, index: number) => {
-    const name = fileName.toLowerCase()
-    if (name.includes("drill")) return "drill"
-    if (name.includes("rnb") || name.includes("piano")) return "rnb"
-    if (name.includes("boom") || name.includes("bap")) return "boom-bap"
-    if (name.includes("afro") || name.includes("dance")) return "afro"
-    const fallback = ["trap", "drill", "rnb", "boom-bap", "afro"]
-    return fallback[index % fallback.length]
-  }
-
   useEffect(() => {
     const loadBeatsForStore = async () => {
       try {
@@ -425,10 +316,7 @@ export function SafariWindow({
           return {
             id: `beat-${index + 1}`,
             name: beat.title || toBeatTitle(beat.name),
-            description:
-              beat.description || `${beat.extension.toUpperCase()} preview from /public/beats (${beat.size}).`,
             image: beat.cover || `/images/album-cover-${(index % 4) + 1}.jpg`,
-            category: beat.category || detectCategory(beat.name, index),
             leasePrice: beat.leasePrice || fallbackLease,
             exclusivePrice: beat.exclusivePrice || fallbackExclusive,
           }
@@ -443,8 +331,7 @@ export function SafariWindow({
     loadBeatsForStore()
   }, [])
 
-  const filteredServices =
-    selectedCategory === "all" ? services : services.filter((service) => service.category === selectedCategory)
+  const filteredServices = services
 
   const addTab = () => {
     // Set all tabs to inactive
@@ -812,7 +699,7 @@ export function SafariWindow({
         <div className="flex items-center px-3 py-1 bg-[#262626] border-b border-[#3a3a3a] text-xs text-white/70">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1 hover:text-white cursor-default">
-              <img src="/icons/studio-vision-favicon.png" alt="" className="w-3 h-3" />
+              <img src="/icons/safari.webp" alt="" className="w-3 h-3" />
               <span>YUNG98</span>
             </div>
             <div className="flex items-center gap-1 hover:text-white cursor-default">
@@ -1042,11 +929,13 @@ export function SafariWindow({
                                     src={item.image || "/placeholder.svg?height=64&width=64"}
                                     alt={item.name}
                                     className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      e.currentTarget.src = "/images/album-cover-1.jpg"
+                                    }}
                                   />
                                 </div>
                                 <div>
                                   <h4 className="font-medium text-gray-800">{item.name}</h4>
-                                  <p className="text-sm text-gray-500">{item.category}</p>
                                   <p className="text-xs text-gray-500">{item.selectedLicense}</p>
                                 </div>
                               </div>
@@ -1101,81 +990,12 @@ export function SafariWindow({
                     </div>
 
                     <div className="mb-8">
-                      <div className="flex flex-wrap justify-center gap-4 mb-8">
-                        <button
-                          onClick={() => setSelectedCategory("all")}
-                          className={`px-4 py-2 rounded-full flex items-center gap-2 ${
-                            selectedCategory === "all"
-                              ? "bg-blue-600 text-white"
-                              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                          }`}
-                        >
-                          <Smartphone className="h-4 w-4" />
-                           <span>All Beats</span>
-                        </button>
-                        <button
-                           onClick={() => setSelectedCategory("trap")}
-                          className={`px-4 py-2 rounded-full flex items-center gap-2 ${
-                             selectedCategory === "trap"
-                              ? "bg-blue-600 text-white"
-                              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                          }`}
-                        >
-                          <Camera className="h-4 w-4" />
-                           <span>Trap</span>
-                        </button>
-                        <button
-                           onClick={() => setSelectedCategory("drill")}
-                          className={`px-4 py-2 rounded-full flex items-center gap-2 ${
-                             selectedCategory === "drill"
-                              ? "bg-blue-600 text-white"
-                              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                          }`}
-                        >
-                          <Palette className="h-4 w-4" />
-                           <span>Drill</span>
-                        </button>
-                        <button
-                           onClick={() => setSelectedCategory("rnb")}
-                          className={`px-4 py-2 rounded-full flex items-center gap-2 ${
-                             selectedCategory === "rnb"
-                              ? "bg-blue-600 text-white"
-                              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                          }`}
-                        >
-                          <Video className="h-4 w-4" />
-                           <span>R&B</span>
-                        </button>
-                        <button
-                           onClick={() => setSelectedCategory("boom-bap")}
-                          className={`px-4 py-2 rounded-full flex items-center gap-2 ${
-                             selectedCategory === "boom-bap"
-                              ? "bg-blue-600 text-white"
-                              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                          }`}
-                        >
-                          <Globe className="h-4 w-4" />
-                           <span>Boom Bap</span>
-                        </button>
-                        <button
-                           onClick={() => setSelectedCategory("afro")}
-                          className={`px-4 py-2 rounded-full flex items-center gap-2 ${
-                             selectedCategory === "afro"
-                              ? "bg-blue-600 text-white"
-                              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                          }`}
-                        >
-                          <Megaphone className="h-4 w-4" />
-                           <span>Afro</span>
-                        </button>
-                      </div>
-
-                      <CategoryExplanation category={selectedCategory} />
+                      <div className="text-center text-gray-600 mb-8">{filteredServices.length} tracks available</div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredServices.length === 0 ? (
                           <div className="col-span-full bg-white rounded-lg shadow-md p-8 text-center text-gray-600">
-                            No beats in this category yet. Add files to `public/beats` or switch filter.
+                            No beats found. Add files to `public/beats`.
                           </div>
                         ) : (
                           filteredServices.map((service) => (

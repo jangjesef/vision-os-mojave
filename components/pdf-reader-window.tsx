@@ -142,79 +142,67 @@ export function PDFReaderWindow({
             style={{
               width: `${(8.5 * zoom) / 100}in`,
               height: `${(11 * zoom) / 100}in`,
-              direction: "rtl", // For Persian text which is right-to-left
             }}
           >
             <div className="p-8 h-full overflow-auto text-black" style={{ fontSize: `${zoom / 100}rem` }}>
               {/* Display different content based on current page */}
               {currentPage === 1 && (
-                <div className="font-serif text-right" style={{ lineHeight: 1.8 }}>
-                  <h1 className="text-xl font-bold mb-4">سخن ناشر</h1>
+                <div className="font-serif" style={{ lineHeight: 1.8 }}>
+                  <h1 className="text-xl font-bold mb-4">YUNG98 OS - Licensing Guide</h1>
                   <p className="mb-3">
-                    هنگام جسـتار را ادبیـات بی‌قرار خوانده‌اند. تعریف جسـتار روایی برای هـر خواننده خوانـدن متن، شـکل
-                    می‌گیـرد، فرو می‌ریزد و دوباره سـاخته می‌شـود. قواعد ثابتی در میـان نیسـت و بـه قول انَی دیـارد،
-                    جسـتارنویس هر بار باید فـرم خودش را بسـازد.
+                    Thanks for checking out YUNG98 beats. This document explains how licensing works and what each
+                    option includes for release usage.
                   </p>
                   <p className="mb-3">
-                    اما نویسـندگانی کـه بـا ایـن ژانـر دسـت‌وپنجه نـرم کرده‌اند بـدون ادعـای ارائـه‌ی تعریـف نظـری برای
-                    ایـن قالب نوشـتن، تعبیرهای قابل‌تأملـی دربارهی جسـتار دارند که کنار هـم دیدن‌شـان تصویـر ذهنی مـا از
-                    این ژانـر را روشـن‌تر می‌کند.
+                    All beats are available in two formats: Lease and Exclusive. Lease is best for fast releases and
+                    testing new material. Exclusive is for full ownership rights based on agreed terms.
                   </p>
                   <p className="mb-3">
-                    جستارنویسان، این ژانر را فرمی گریزپا می‌دانند؛ فرمی سـیال برای گفتن از رخدادهایی که بر منِ نویسـنده
-                    گذشـته و ردپای‌شـان نه در زندگی او که بر هویتش به جا مانده؛ رخدادهایی که راوی می‌کوشد به مددشان تکه‌ای
-                    شخصی و خاص را در جورچین مفاهیم کیهانی، جهانی و عام جا دهد.
+                    Need custom production, mix/master, or stems? Use the Contact window and include track name,
+                    timeline, and release plan.
                   </p>
                 </div>
               )}
 
               {currentPage === 2 && (
-                <div className="font-serif text-right" style={{ lineHeight: 1.8 }}>
-                  <h1 className="text-xl font-bold mb-4">فصل اول</h1>
+                <div className="font-serif" style={{ lineHeight: 1.8 }}>
+                  <h1 className="text-xl font-bold mb-4">Lease Terms</h1>
                   <p className="mb-3">
-                    در این فصل به بررسی مفهوم ادبیات معاصر و تأثیر آن بر فرهنگ ایرانی می‌پردازیم. ادبیات معاصر ایران با
-                    تحولات اجتماعی و سیاسی قرن بیستم پیوندی ناگسستنی دارد و بازتاب‌دهنده‌ی دگرگونی‌های عمیق جامعه‌ی ایرانی
-                    است.
+                    Lease lets multiple artists license the same beat. Typical use includes streaming platforms,
+                    YouTube, and live performance within the agreed limits.
                   </p>
                   <p className="mb-3">
-                    نویسندگان این دوره با بهره‌گیری از سنت‌های ادبی کهن و آشنایی با جریان‌های ادبی جهان، زبان و بیانی نو در
-                    ادبیات فارسی پدید آوردند که هم ریشه در گذشته داشت و هم به نیازهای زمانه پاسخ می‌داد.
+                    Lease price: $99. Delivery includes high-quality audio file and licensing proof.
                   </p>
                   <p className="mb-3">
-                    در این میان، داستان‌نویسی به عنوان قالبی مدرن، جایگاه ویژه‌ای یافت و به ابزاری برای بازنمایی واقعیت‌های
-                    اجتماعی و انسانی تبدیل شد. نویسندگانی چون صادق هدایت، بزرگ علوی و صادق چوبک با آثار خود مسیر تازه‌ای
-                    را در ادبیات داستانی ایران گشودند.
+                    If you need stems, custom arrangement, or higher usage limits, request an upgrade.
                   </p>
                 </div>
               )}
 
               {currentPage === 3 && (
-                <div className="font-serif text-right" style={{ lineHeight: 1.8 }}>
-                  <h1 className="text-xl font-bold mb-4">فصل دوم</h1>
+                <div className="font-serif" style={{ lineHeight: 1.8 }}>
+                  <h1 className="text-xl font-bold mb-4">Exclusive Terms</h1>
                   <p className="mb-3">
-                    شعر معاصر فارسی با نوآوری‌های نیما یوشیج دگرگون شد. او با شکستن قالب‌های سنتی و ایجاد زبانی نو، افق‌های
-                    تازه‌ای را پیش روی شاعران گشود. پس از او، شاعرانی چون احمد شاملو، فروغ فرخزاد، مهدی اخوان ثالث و
-                    سهراب سپهری هر یک به شیوه‌ی خود این راه را ادامه دادند.
+                    Exclusive license removes the beat from public catalog after purchase and grants priority rights
+                    based on contract terms.
                   </p>
                   <p className="mb-3">
-                    شعر نو فارسی توانست بسیاری از مفاهیم و تجربه‌های انسان معاصر را که در قالب‌های سنتی نمی‌گنجید، بیان
-                    کند. این شعر با زبانی ساده‌تر و نزدیک‌تر به زبان گفتار، اما غنی از تصاویر و استعاره‌های بدیع، توانست با
-                    مخاطب ارتباطی عمیق‌تر برقرار کند.
+                    Exclusive price: $249. Recommended for official singles, videos, and long-term catalog releases.
                   </p>
                   <p className="mb-3">
-                    در این دوره، شعر از حالت تغزلی صرف خارج شد و به مسائل اجتماعی، سیاسی و فلسفی پرداخت. شاعران با نگاهی
-                    انتقادی به جامعه و تاریخ، تلاش کردند تصویری واقع‌بینانه از شرایط انسان معاصر ارائه دهند.
+                    For fully custom records, use Contact and include references, BPM range, and delivery target.
                   </p>
                 </div>
               )}
 
               {currentPage > 3 && (
-                <div className="font-serif text-right" style={{ lineHeight: 1.8 }}>
-                  <h1 className="text-xl font-bold mb-4">صفحه {currentPage}</h1>
+                <div className="font-serif" style={{ lineHeight: 1.8 }}>
+                  <h1 className="text-xl font-bold mb-4">Page {currentPage}</h1>
                   <p className="mb-3">
-                    این صفحه در حال آماده‌سازی است. لطفاً به صفحات قبلی مراجعه کنید یا به صفحات بعدی بروید.
+                    Additional notes are being prepared for this section.
                   </p>
-                  <p className="mb-3">محتوای کتاب در حال تکمیل است. با تشکر از صبر و شکیبایی شما.</p>
+                  <p className="mb-3">Open Contact to request custom licensing terms for your release plan.</p>
                 </div>
               )}
             </div>
@@ -232,4 +220,3 @@ export function PDFReaderWindow({
     </DraggableWindow>
   )
 }
-

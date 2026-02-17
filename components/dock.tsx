@@ -105,7 +105,7 @@ export function Dock({
       },
     },
     {
-      icon: "/icons/music.webp",
+      icon: "/icons/music.svg",
       name: "Music Player",
       onClick: onMusicPlayerClick,
       isActive: activeWindows.musicPlayer,
@@ -276,7 +276,16 @@ export function Dock({
               className="relative flex items-center justify-center transition-all duration-200 hover:scale-110 hover:-translate-y-1"
               title={icon.name}
             >
-              <img src={icon.icon || "/placeholder.svg"} alt={icon.name} className="w-12 h-12 object-contain" />
+              <img
+                src={icon.icon || "/placeholder.svg"}
+                alt={icon.name}
+                className="w-12 h-12 object-contain"
+                onError={(e) => {
+                  const fallback = "/placeholder.svg"
+                  if (e.currentTarget.src.endsWith(fallback)) return
+                  e.currentTarget.src = fallback
+                }}
+              />
               {icon.isActive && <div className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-white"></div>}
             </button>
             <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10">

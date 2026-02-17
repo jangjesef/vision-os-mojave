@@ -84,7 +84,12 @@ export function MacOSDesktop({ children }: MacOSDesktopProps) {
     setIsDragOver(false)
 
     try {
-      const data = JSON.parse(e.dataTransfer.getData("application/json"))
+      const rawData = e.dataTransfer.getData("application/json")
+      if (!rawData) {
+        return
+      }
+
+      const data = JSON.parse(rawData)
       if (data.fileId) {
         moveFile(data.fileId, "desktop")
       }
@@ -132,7 +137,7 @@ export function MacOSDesktop({ children }: MacOSDesktopProps) {
             name: "YUNG98",
             type: "folder",
             parent: "root",
-            icon: "/icons/studio-vision-icon.webp",
+            icon: "/icons/finder.webp",
           }}
         />
       </div>

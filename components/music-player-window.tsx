@@ -23,9 +23,6 @@ interface Song {
   title: string
   artist: string
   album: string
-  bpm: number
-  key: string
-  mood: string
   duration: number
   cover: string
   audioSrc: string
@@ -39,10 +36,6 @@ interface RepoBeatFile {
   title?: string
   artist?: string
   album?: string
-  category?: string
-  bpm?: number
-  key?: string
-  mood?: string
   cover?: string
 }
 
@@ -95,9 +88,6 @@ export function MusicPlayerWindow({
           title: beat.title || toTitle(beat.name),
           artist: beat.artist || "YUNG98",
           album: beat.album || "YUNG98 Beat Vault",
-          bpm: beat.bpm || 130,
-          key: beat.key || "Unknown",
-          mood: beat.mood || beat.category || "Beat",
           duration: 0,
           cover: beat.cover || `/images/album-cover-${(index % 4) + 1}.jpg`,
           audioSrc: beat.path,
@@ -265,15 +255,15 @@ export function MusicPlayerWindow({
               src={currentSong.cover || "/placeholder.svg?height=192&width=192"}
               alt={currentSong.title}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.src = "/images/album-cover-1.jpg"
+              }}
             />
           </div>
           <div className="text-center">
             <h3 className="text-lg font-medium">{currentSong.title}</h3>
             <p className="text-sm text-white/70">{currentSong.artist}</p>
             <p className="text-xs text-white/50">{currentSong.album}</p>
-            <p className="text-xs text-white/50 mt-1">
-              {currentSong.bpm} BPM • {currentSong.key} • {currentSong.mood}
-            </p>
           </div>
         </div>
 
@@ -355,12 +345,14 @@ export function MusicPlayerWindow({
                     src={song.cover || "/placeholder.svg?height=32&width=32"}
                     alt={song.title}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/album-cover-1.jpg"
+                    }}
                   />
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-medium">{song.title}</div>
                 <div className="text-xs text-white/50">{song.artist}</div>
-                  <div className="text-xs text-white/40">{song.bpm} BPM • {song.mood}</div>
                 </div>
                 <div className="text-xs text-white/50">{song.duration > 0 ? formatTime(song.duration) : "--:--"}</div>
               </div>

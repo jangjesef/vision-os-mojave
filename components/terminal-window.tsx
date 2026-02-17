@@ -51,7 +51,7 @@ export function TerminalWindow({
   }
 
   const getPrompt = () => {
-    return `amirsalmani@macos ${currentDirectory} % `
+    return `yung98@macos ${currentDirectory} % `
   }
 
   const handleCommand = (command: string) => {
@@ -120,7 +120,7 @@ export function TerminalWindow({
         break
 
       case "whoami":
-        output = "amirsalmani"
+        output = "yung98"
         break
 
       case "":

@@ -2,10 +2,10 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useFileSystem } from "@/contexts/file-system-context"
 import type { FileItem } from "@/types/file-system"
-import { Folder, FileText, File } from "lucide-react"
+import { Folder, FileText, File, Music } from "lucide-react"
 
 interface DesktopIconProps {
   file: FileItem
@@ -16,10 +16,22 @@ export function DesktopIcon({ file, onDoubleClick }: DesktopIconProps) {
   const { moveFile } = useFileSystem()
   const [isDragging, setIsDragging] = useState(false)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
+  const [iconLoadFailed, setIconLoadFailed] = useState(false)
+
+  useEffect(() => {
+    setIconLoadFailed(false)
+  }, [file.id, file.icon])
 
   const getIcon = () => {
-    if (file.icon) {
-      return <img src={file.icon || "/placeholder.svg"} alt={file.name} className="w-10 h-10 object-contain" />
+    if (file.icon && !iconLoadFailed) {
+      return (
+        <img
+          src={file.icon || "/placeholder.svg"}
+          alt={file.name}
+          className="w-10 h-10 object-contain"
+          onError={() => setIconLoadFailed(true)}
+        />
+      )
     }
 
     if (file.type === "folder") {
@@ -29,6 +41,8 @@ export function DesktopIcon({ file, onDoubleClick }: DesktopIconProps) {
         return <FileText className="w-10 h-10 text-gray-400" />
       } else if (file.extension === "pdf") {
         return <FileText className="w-10 h-10 text-red-400" />
+      } else if (["mp3", "wav", "m4a", "ogg", "flac", "aiff", "aac"].includes(file.extension || "")) {
+        return <Music className="w-10 h-10 text-orange-400" />
       } else if (["jpg", "png", "gif"].includes(file.extension || "")) {
         return <File className="w-10 h-10 text-purple-400" />
       }
@@ -87,4 +101,3 @@ export function DesktopIcon({ file, onDoubleClick }: DesktopIconProps) {
     </div>
   )
 }
-

@@ -79,7 +79,7 @@ export function FileSystemProvider({ children }: { children: ReactNode }) {
               size: beat.size,
               modified: new Date().toLocaleDateString(),
               path: beat.path,
-              icon: "/icons/music.webp",
+              icon: "/icons/music.svg",
             }
             return beatId
           })
@@ -93,7 +93,19 @@ export function FileSystemProvider({ children }: { children: ReactNode }) {
               type: "folder",
               parent: "desktop",
               modified: new Date().toLocaleDateString(),
-              icon: "/icons/music.webp",
+              icon: "/icons/folder.svg",
+            }
+          } else {
+            nextItems[BEATS_FOLDER_ID] = {
+              ...nextItems[BEATS_FOLDER_ID],
+              icon: "/icons/folder.svg",
+            }
+          }
+
+          if (nextItems["applications-3"]) {
+            nextItems["applications-3"] = {
+              ...nextItems["applications-3"],
+              icon: "/icons/music.svg",
             }
           }
 
