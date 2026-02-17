@@ -103,6 +103,13 @@ export function FinderWindow({
       isActive: currentLocation === "downloads",
       location: "downloads",
     },
+    {
+      id: "beats",
+      name: "Beats",
+      icon: <Music className="w-4 h-4 text-blue-400" />,
+      isActive: currentLocation === "beats",
+      location: "beats",
+    },
     { id: "home", name: "Home", icon: <Home className="w-4 h-4 text-blue-400" />, location: "home" },
   ]
 
@@ -113,6 +120,34 @@ export function FinderWindow({
 
   // Get files for current location
   const files = getFilesByParent(currentLocation)
+
+  const resolveFolderLocation = (file: FileItem) => {
+    const normalizedName = file.name.toLowerCase()
+    const locationByName: Record<string, string> = {
+      photography: "photography",
+      "graphic design": "design",
+      "video production": "video",
+      "web development": "web",
+      marketing: "marketing",
+      portfolio: "portfolio",
+      documents: "documents",
+      downloads: "downloads",
+      applications: "applications",
+      desktop: "desktop",
+      beats: "beats",
+    }
+
+    if (locationByName[normalizedName]) {
+      return locationByName[normalizedName]
+    }
+
+    const locationFiles = getFilesByParent(file.id)
+    if (locationFiles.length > 0) {
+      return file.id
+    }
+
+    return null
+  }
 
   const getFileIcon = (file: FileItem) => {
     if (file.icon) {
@@ -202,7 +237,8 @@ export function FinderWindow({
         currentLocation === "desktop" ||
         currentLocation === "documents" ||
         currentLocation === "downloads" ||
-        currentLocation === "applications"
+        currentLocation === "applications" ||
+        currentLocation === "beats"
       ) {
         return [currentLocation]
       }
@@ -269,7 +305,7 @@ export function FinderWindow({
         </div>
 
         <div className="mb-4">
-          <h3 className="text-xs uppercase text-white/50 px-2 py-1">Studio Vision</h3>
+          <h3 className="text-xs uppercase text-white/50 px-2 py-1">YUNG98 OS</h3>
           <div className="space-y-1">
             <div
               className={`px-2 py-1 rounded cursor-default flex items-center gap-2 ${
@@ -361,9 +397,12 @@ export function FinderWindow({
     try {
       const data = JSON.parse(e.dataTransfer.getData("application/json"))
       if (data.fileId) {
+        const targetFolderItem = targetFolder ? files.find((item) => item.id === targetFolder) : null
+        const mappedTarget = targetFolderItem ? resolveFolderLocation(targetFolderItem) : null
+
         if (targetFolder) {
           // Move to specific folder
-          moveFile(data.fileId, targetFolder)
+          moveFile(data.fileId, mappedTarget || currentLocation)
         } else {
           // Move to current location
           moveFile(data.fileId, currentLocation)
@@ -388,8 +427,10 @@ export function FinderWindow({
 
   const handleFileDoubleClick = (file: FileItem) => {
     if (file.type === "folder") {
-      // Navigate into the folder
-      setCurrentLocation(file.id)
+      const nextLocation = resolveFolderLocation(file)
+      if (nextLocation) {
+        setCurrentLocation(nextLocation)
+      }
     } else if (onOpenFile) {
       // Open the file
       onOpenFile(file)
@@ -559,4 +600,3 @@ export function FinderWindow({
     </DraggableWindow>
   )
 }
-

@@ -35,7 +35,7 @@ export function ContactFormWindow({
     phone: "",
     subject: "",
     message: "",
-    service: "photography",
+    service: "exclusive-license",
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -102,14 +102,14 @@ export function ContactFormWindow({
         phone: "",
         subject: "",
         message: "",
-        service: "photography",
+        service: "exclusive-license",
       })
     }, 1500)
   }
 
   return (
     <DraggableWindow
-      title="Contact Studio Vision"
+      title="Contact YUNG98"
       width={size.width}
       height={size.height}
       zIndex={zIndex}
@@ -123,9 +123,9 @@ export function ContactFormWindow({
     >
       <div className="flex flex-col h-full bg-[#2a2a2a] text-white p-6 overflow-auto">
         <div className="mb-6">
-          <h2 className="text-2xl font-semibold mb-2">Get in Touch</h2>
+          <h2 className="text-2xl font-semibold mb-2">Book a Session / License a Beat</h2>
           <p className="text-white/70">
-            Have a project in mind? Fill out the form below and we'll get back to you as soon as possible.
+            Tell me what sound you need and I will get back to you with licensing or custom beat options.
           </p>
         </div>
 
@@ -212,18 +212,18 @@ export function ContactFormWindow({
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Service</label>
+                <label className="block text-sm font-medium mb-1">Request Type</label>
                 <select
                   name="service"
                   value={formData.service}
                   onChange={handleChange}
                   className="w-full bg-[#1d1d1d] border border-[#3a3a3a] rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
                 >
-                  <option value="photography">Photography</option>
-                  <option value="videography">Videography</option>
-                  <option value="design">Graphic Design</option>
-                  <option value="web">Web Development</option>
-                  <option value="marketing">Digital Marketing</option>
+                  <option value="exclusive-license">Exclusive License</option>
+                  <option value="non-exclusive-license">Non-Exclusive License</option>
+                  <option value="custom-beat">Custom Beat</option>
+                  <option value="mixing-mastering">Mixing / Mastering</option>
+                  <option value="collab">Collab</option>
                   <option value="other">Other</option>
                 </select>
               </div>
@@ -281,4 +281,3 @@ export function ContactFormWindow({
     </DraggableWindow>
   )
 }
-

@@ -11,7 +11,7 @@ interface LoginScreenProps {
 }
 
 export function LoginScreen({ onLogin, error }: LoginScreenProps) {
-  const [username, setUsername] = useState("studio")
+  const [username, setUsername] = useState("yung98")
   const [password, setPassword] = useState("")
   const [shake, setShake] = useState(false)
   const [currentTime, setCurrentTime] = useState("")
@@ -96,7 +96,7 @@ export function LoginScreen({ onLogin, error }: LoginScreenProps) {
           </svg>
         </div>
 
-        <div className="text-white text-xl font-medium mb-6">Studio Vision</div>
+        <div className="text-white text-xl font-medium mb-6">YUNG98 OS</div>
 
         <form onSubmit={handleSubmit} className="w-full">
           <div className="relative mb-5">
@@ -116,7 +116,7 @@ export function LoginScreen({ onLogin, error }: LoginScreenProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-white/70 text-sm">
               <Lock className="w-4 h-4" />
-              <span>Hint: vision</span>
+               <span>Hint: yung98</span>
             </div>
 
             <button
@@ -201,4 +201,3 @@ function RefreshCw(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   )
 }
-

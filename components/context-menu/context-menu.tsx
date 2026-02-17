@@ -7,7 +7,7 @@ import { createPortal } from "react-dom"
 import { X } from "lucide-react"
 
 export interface ContextMenuItem {
-  label: string
+  label?: string
   icon?: React.ReactNode
   onClick?: () => void
   disabled?: boolean
@@ -124,4 +124,3 @@ export function ContextMenu({ items, x, y, onClose, title, width = 220 }: Contex
     document.body,
   )
 }
-

@@ -11,7 +11,7 @@ import { ControlCenter } from "../control-center/control-center"
 import { NotificationCenter } from "../notification-center/notification-center"
 
 interface MenuBarProps {
-  activeWindow: "finder" | "safari" | "terminal" | "systemPreferences" | null
+  activeWindow: "finder" | "safari" | "terminal" | "systemPreferences" | "musicPlayer" | "contactForm" | "pdfReader" | null
   onLogout?: () => void
 }
 
@@ -271,4 +271,3 @@ export function MenuBar({ activeWindow, onLogout }: MenuBarProps) {
     </>
   )
 }
-

@@ -4,6 +4,18 @@ import { createContext, useContext, useState, useEffect, type ReactNode } from "
 import { type FileSystem, type FileItem, initialFileSystem } from "@/types/file-system"
 import { SimpleToast } from "@/components/ui/toast"
 
+interface RepoBeatFile {
+  name: string
+  path: string
+  extension: string
+  size: string
+}
+
+const BEATS_FOLDER_ID = "desktop-4"
+const BEAT_FILE_ID_PREFIX = "beats-file-"
+
+const toBeatItemId = (fileName: string) => `${BEAT_FILE_ID_PREFIX}${encodeURIComponent(fileName).replaceAll("%", "_")}`
+
 interface FileSystemContextType {
   fileSystem: FileSystem
   moveFile: (fileId: string, targetParent: string) => void
@@ -36,34 +48,94 @@ export function FileSystemProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("macos-file-system", JSON.stringify(fileSystem))
   }, [fileSystem])
 
+  useEffect(() => {
+    const syncBeatsFromRepo = async () => {
+      try {
+        const response = await fetch("/api/beats")
+        if (!response.ok) {
+          return
+        }
+
+        const data = (await response.json()) as { beats?: RepoBeatFile[] }
+        const repoBeats = data.beats ?? []
+
+        setFileSystem((prev) => {
+          const nextItems: Record<string, FileItem> = { ...prev.items }
+
+          for (const id of Object.keys(nextItems)) {
+            if (id.startsWith(BEAT_FILE_ID_PREFIX)) {
+              delete nextItems[id]
+            }
+          }
+
+          const beatIds = repoBeats.map((beat) => {
+            const beatId = toBeatItemId(beat.name)
+            nextItems[beatId] = {
+              id: beatId,
+              name: beat.name,
+              type: "file",
+              parent: "beats",
+              extension: beat.extension,
+              size: beat.size,
+              modified: new Date().toLocaleDateString(),
+              path: beat.path,
+              icon: "/icons/music.webp",
+            }
+            return beatId
+          })
+
+          const desktopIds = prev.desktop.includes(BEATS_FOLDER_ID) ? prev.desktop : [...prev.desktop, BEATS_FOLDER_ID]
+
+          if (!nextItems[BEATS_FOLDER_ID]) {
+            nextItems[BEATS_FOLDER_ID] = {
+              id: BEATS_FOLDER_ID,
+              name: "Beats",
+              type: "folder",
+              parent: "desktop",
+              modified: new Date().toLocaleDateString(),
+              icon: "/icons/music.webp",
+            }
+          }
+
+          return {
+            ...prev,
+            items: nextItems,
+            desktop: desktopIds,
+            beats: beatIds,
+          }
+        })
+      } catch (error) {
+        console.error("Failed to sync beats folder:", error)
+      }
+    }
+
+    syncBeatsFromRepo()
+  }, [])
+
   const moveFile = (fileId: string, targetParent: string) => {
     setFileSystem((prev) => {
       const file = prev.items[fileId]
       if (!file) return prev
 
-      const currentParent = file.parent
+      const currentParentItems = prev[file.parent as keyof FileSystem]
+      const targetParentItems = prev[targetParent as keyof FileSystem]
+      if (!Array.isArray(currentParentItems) || !Array.isArray(targetParentItems)) {
+        return prev
+      }
 
-      // Remove from current parent array
-      const updatedPrev = {
+      const nextState = {
         ...prev,
-        [currentParent]: prev[currentParent as keyof typeof prev].filter((id) => id !== fileId) as string[],
-      }
-
-      // Add to new parent array
-      updatedPrev[targetParent as keyof typeof updatedPrev] = [
-        ...(updatedPrev[targetParent as keyof typeof updatedPrev] as string[]),
-        fileId,
-      ]
-
-      // Update file's parent reference
-      updatedPrev.items = {
-        ...updatedPrev.items,
-        [fileId]: {
-          ...updatedPrev.items[fileId],
-          parent: targetParent,
-          modified: new Date().toLocaleDateString(),
+        [file.parent]: currentParentItems.filter((id) => id !== fileId),
+        [targetParent]: [...targetParentItems, fileId],
+        items: {
+          ...prev.items,
+          [fileId]: {
+            ...prev.items[fileId],
+            parent: targetParent,
+            modified: new Date().toLocaleDateString(),
+          },
         },
-      }
+      } as FileSystem
 
       // Show toast notification
       setToast({
@@ -76,7 +148,7 @@ export function FileSystemProvider({ children }: { children: ReactNode }) {
         setToast({ message: "", visible: false })
       }, 3000)
 
-      return updatedPrev
+      return nextState
     })
   }
 
@@ -115,7 +187,7 @@ export function FileSystemProvider({ children }: { children: ReactNode }) {
       return {
         ...prev,
         items: remainingItems,
-        [file.parent]: prev[file.parent as keyof typeof prev].filter((id) => id !== fileId) as string[],
+        [file.parent]: (prev[file.parent as keyof FileSystem] as string[]).filter((id) => id !== fileId),
         trash: [...prev.trash, fileId],
       }
     })
@@ -141,7 +213,10 @@ export function FileSystemProvider({ children }: { children: ReactNode }) {
   }
 
   const getFilesByParent = (parent: string): FileItem[] => {
-    const fileIds = fileSystem[parent as keyof typeof fileSystem] as string[]
+    const fileIds = fileSystem[parent as keyof typeof fileSystem] as string[] | undefined
+    if (!Array.isArray(fileIds)) {
+      return []
+    }
     return fileIds.map((id) => fileSystem.items[id])
   }
 
@@ -169,4 +244,3 @@ export function useFileSystem() {
   }
   return context
 }
-

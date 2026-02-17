@@ -23,9 +23,27 @@ interface Song {
   title: string
   artist: string
   album: string
+  bpm: number
+  key: string
+  mood: string
   duration: number
   cover: string
   audioSrc: string
+}
+
+interface RepoBeatFile {
+  name: string
+  path: string
+  extension: string
+  size: string
+  title?: string
+  artist?: string
+  album?: string
+  category?: string
+  bpm?: number
+  key?: string
+  mood?: string
+  cover?: string
 }
 
 export function MusicPlayerWindow({
@@ -40,8 +58,10 @@ export function MusicPlayerWindow({
   isMaximized,
 }: MusicPlayerWindowProps) {
   const [isPlaying, setIsPlaying] = useState(false)
+  const [songs, setSongs] = useState<Song[]>([])
   const [currentSongIndex, setCurrentSongIndex] = useState(0)
   const [currentTime, setCurrentTime] = useState(0)
+  const [currentDuration, setCurrentDuration] = useState(0)
   const [volume, setVolume] = useState(0.7)
   const [isMuted, setIsMuted] = useState(false)
   const [isRepeat, setIsRepeat] = useState(false)
@@ -50,46 +70,47 @@ export function MusicPlayerWindow({
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const progressBarRef = useRef<HTMLDivElement>(null)
 
-  const songs: Song[] = [
-    {
-      id: 1,
-      title: "Ambient Studio",
-      artist: "Studio Vision",
-      album: "Creative Sounds",
-      duration: 183,
-      cover: "/images/album-cover-1.jpg",
-      audioSrc: "/audio/ambient-studio.mp3",
-    },
-    {
-      id: 2,
-      title: "Digital Dreams",
-      artist: "Studio Vision",
-      album: "Creative Sounds",
-      duration: 214,
-      cover: "/images/album-cover-2.jpg",
-      audioSrc: "/audio/digital-dreams.mp3",
-    },
-    {
-      id: 3,
-      title: "Creative Flow",
-      artist: "Studio Vision",
-      album: "Creative Sounds",
-      duration: 197,
-      cover: "/images/album-cover-3.jpg",
-      audioSrc: "/audio/creative-flow.mp3",
-    },
-    {
-      id: 4,
-      title: "Visual Harmony",
-      artist: "Studio Vision",
-      album: "Creative Sounds",
-      duration: 225,
-      cover: "/images/album-cover-4.jpg",
-      audioSrc: "/audio/visual-harmony.mp3",
-    },
-  ]
+  const currentSong = songs[currentSongIndex] ?? null
 
-  const currentSong = songs[currentSongIndex]
+  const toTitle = (fileName: string) => {
+    const baseName = fileName.replace(/\.[^.]+$/, "")
+    return baseName
+      .replace(/[._-]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .replace(/\b\w/g, (char) => char.toUpperCase())
+  }
+
+  useEffect(() => {
+    const loadRepoBeats = async () => {
+      try {
+        const response = await fetch("/api/beats")
+        if (!response.ok) return
+
+        const data = (await response.json()) as { beats?: RepoBeatFile[] }
+        const repoBeats = data.beats ?? []
+
+        const mappedSongs: Song[] = repoBeats.map((beat, index) => ({
+          id: index + 1,
+          title: beat.title || toTitle(beat.name),
+          artist: beat.artist || "YUNG98",
+          album: beat.album || "YUNG98 Beat Vault",
+          bpm: beat.bpm || 130,
+          key: beat.key || "Unknown",
+          mood: beat.mood || beat.category || "Beat",
+          duration: 0,
+          cover: beat.cover || `/images/album-cover-${(index % 4) + 1}.jpg`,
+          audioSrc: beat.path,
+        }))
+
+        setSongs(mappedSongs)
+      } catch (error) {
+        console.error("Failed to load beats:", error)
+      }
+    }
+
+    loadRepoBeats()
+  }, [])
 
   useEffect(() => {
     // Create audio element
@@ -116,9 +137,6 @@ export function MusicPlayerWindow({
     audio.addEventListener("timeupdate", updateTime)
     audio.addEventListener("ended", handleEnded)
 
-    // Load first song
-    loadSong(currentSong)
-
     return () => {
       audio.pause()
       audio.removeEventListener("timeupdate", updateTime)
@@ -133,16 +151,28 @@ export function MusicPlayerWindow({
   }, [volume, isMuted])
 
   useEffect(() => {
+    if (!currentSong) {
+      setCurrentTime(0)
+      setCurrentDuration(0)
+      setIsPlaying(false)
+      return
+    }
+
     loadSong(currentSong)
     if (isPlaying) {
       playCurrentSong()
     }
-  }, [currentSongIndex])
+  }, [currentSong])
 
   const loadSong = (song: Song) => {
     if (audioRef.current) {
       audioRef.current.src = song.audioSrc
       audioRef.current.load()
+      audioRef.current.onloadedmetadata = () => {
+        const resolvedDuration = Number.isFinite(audioRef.current?.duration) ? (audioRef.current?.duration ?? 0) : 0
+        setCurrentDuration(resolvedDuration)
+      }
+      setCurrentTime(0)
     }
   }
 
@@ -169,6 +199,7 @@ export function MusicPlayerWindow({
   }
 
   const handlePrevious = () => {
+    if (songs.length === 0) return
     if (isShuffle) {
       const randomIndex = Math.floor(Math.random() * songs.length)
       setCurrentSongIndex(randomIndex)
@@ -178,6 +209,7 @@ export function MusicPlayerWindow({
   }
 
   const handleNext = () => {
+    if (songs.length === 0) return
     if (isShuffle) {
       const randomIndex = Math.floor(Math.random() * songs.length)
       setCurrentSongIndex(randomIndex)
@@ -191,7 +223,7 @@ export function MusicPlayerWindow({
       const progressBar = progressBarRef.current
       const rect = progressBar.getBoundingClientRect()
       const percent = (e.clientX - rect.left) / rect.width
-      const newTime = percent * currentSong.duration
+      const newTime = percent * currentDuration
 
       audioRef.current.currentTime = newTime
       setCurrentTime(newTime)
@@ -206,7 +238,7 @@ export function MusicPlayerWindow({
 
   return (
     <DraggableWindow
-      title="Music Player"
+      title="YUNG98 Player"
       width={size.width}
       height={size.height}
       zIndex={zIndex}
@@ -219,6 +251,12 @@ export function MusicPlayerWindow({
       isMaximized={isMaximized}
     >
       <div className="flex flex-col h-full bg-gradient-to-b from-[#1a1a1a] to-[#2a2a2a] text-white p-4">
+        {!currentSong ? (
+          <div className="flex-1 flex items-center justify-center text-white/70 text-sm text-center px-8">
+            Add audio files to `public/beats` and refresh. They will appear here automatically.
+          </div>
+        ) : (
+          <>
         {/* Now Playing */}
         <div className="flex flex-col items-center mb-8">
           <h2 className="text-xl font-semibold mb-2">Now Playing</h2>
@@ -233,6 +271,9 @@ export function MusicPlayerWindow({
             <h3 className="text-lg font-medium">{currentSong.title}</h3>
             <p className="text-sm text-white/70">{currentSong.artist}</p>
             <p className="text-xs text-white/50">{currentSong.album}</p>
+            <p className="text-xs text-white/50 mt-1">
+              {currentSong.bpm} BPM • {currentSong.key} • {currentSong.mood}
+            </p>
           </div>
         </div>
 
@@ -243,16 +284,16 @@ export function MusicPlayerWindow({
             className="h-1 bg-white/20 rounded-full cursor-pointer"
             onClick={handleProgressBarClick}
           >
-            <div
-              className="h-full bg-blue-500 rounded-full"
-              style={{ width: `${(currentTime / currentSong.duration) * 100}%` }}
-            ></div>
+              <div
+                className="h-full bg-blue-500 rounded-full"
+                style={{ width: `${currentDuration > 0 ? (currentTime / currentDuration) * 100 : 0}%` }}
+              ></div>
+            </div>
+            <div className="flex justify-between text-xs text-white/50 mt-1">
+              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(currentDuration || currentSong.duration)}</span>
+            </div>
           </div>
-          <div className="flex justify-between text-xs text-white/50 mt-1">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(currentSong.duration)}</span>
-          </div>
-        </div>
 
         {/* Controls */}
         <div className="flex items-center justify-center gap-4 mb-6">
@@ -296,7 +337,7 @@ export function MusicPlayerWindow({
 
         {/* Playlist */}
         <div className="flex-1 overflow-auto">
-          <h3 className="text-sm font-medium mb-2">Playlist</h3>
+          <h3 className="text-sm font-medium mb-2">Beat Crate</h3>
           <div className="space-y-1">
             {songs.map((song, index) => (
               <div
@@ -318,15 +359,17 @@ export function MusicPlayerWindow({
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-medium">{song.title}</div>
-                  <div className="text-xs text-white/50">{song.artist}</div>
+                <div className="text-xs text-white/50">{song.artist}</div>
+                  <div className="text-xs text-white/40">{song.bpm} BPM • {song.mood}</div>
                 </div>
-                <div className="text-xs text-white/50">{formatTime(song.duration)}</div>
+                <div className="text-xs text-white/50">{song.duration > 0 ? formatTime(song.duration) : "--:--"}</div>
               </div>
             ))}
           </div>
         </div>
+          </>
+        )}
       </div>
     </DraggableWindow>
   )
 }
-

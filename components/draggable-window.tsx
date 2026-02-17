@@ -37,8 +37,8 @@ export function DraggableWindow({
   const [isDragging, setIsDragging] = useState(false)
   const [isResizing, setIsResizing] = useState(false)
   const [resizeDirection, setResizeDirection] = useState<string | null>(null)
-  const dragRef = useRef<{ startX: number; startY: number }>()
-  const resizeRef = useRef<{ startX: number; startY: number; startWidth: number; startHeight: number }>()
+  const dragRef = useRef<{ startX: number; startY: number } | null>(null)
+  const resizeRef = useRef<{ startX: number; startY: number; startWidth: number; startHeight: number } | null>(null)
   const windowRef = useRef<HTMLDivElement>(null)
   const { showContextMenu } = useContextMenu()
 
@@ -86,6 +86,52 @@ export function DraggableWindow({
       }
 
       // Minimum window size
+      newWidth = Math.max(300, newWidth)
+      newHeight = Math.max(200, newHeight)
+
+      if (onResize) {
+        onResize(newWidth, newHeight)
+      }
+      if (resizeDirection.includes("w") || resizeDirection.includes("n")) {
+        onDrag(newX, newY)
+      }
+    }
+  }
+
+  const handleGlobalInteractionMove = (clientX: number, clientY: number) => {
+    if (isDragging && dragRef.current) {
+      const newX = clientX - dragRef.current.startX
+      const newY = clientY - dragRef.current.startY
+      onDrag(newX, newY)
+      return
+    }
+
+    if (isResizing && resizeRef.current && resizeDirection) {
+      const currentWidth = typeof width === "string" ? Number.parseInt(width) : width
+      const currentHeight = typeof height === "string" ? Number.parseInt(height) : height
+
+      let newWidth = currentWidth
+      let newHeight = currentHeight
+      let newX = position.x
+      let newY = position.y
+
+      if (resizeDirection.includes("e")) {
+        newWidth = resizeRef.current.startWidth + (clientX - resizeRef.current.startX)
+      }
+      if (resizeDirection.includes("s")) {
+        newHeight = resizeRef.current.startHeight + (clientY - resizeRef.current.startY)
+      }
+      if (resizeDirection.includes("w")) {
+        const deltaX = clientX - resizeRef.current.startX
+        newWidth = resizeRef.current.startWidth - deltaX
+        newX = position.x + deltaX
+      }
+      if (resizeDirection.includes("n")) {
+        const deltaY = clientY - resizeRef.current.startY
+        newHeight = resizeRef.current.startHeight - deltaY
+        newY = position.y + deltaY
+      }
+
       newWidth = Math.max(300, newWidth)
       newHeight = Math.max(200, newHeight)
 
@@ -167,12 +213,8 @@ export function DraggableWindow({
       setIsResizing(false)
     }
 
-    const handleGlobalMouseMove = (e: MouseEvent) => {
-      if (isDragging && dragRef.current) {
-        const newX = e.clientX - dragRef.current.startX
-        const newY = e.clientY - dragRef.current.startY
-        onDrag(newX, newY)
-      }
+    const handleGlobalMouseMove = (e: globalThis.MouseEvent) => {
+      handleGlobalInteractionMove(e.clientX, e.clientY)
     }
 
     window.addEventListener("mouseup", handleGlobalMouseUp)
@@ -182,7 +224,7 @@ export function DraggableWindow({
       window.removeEventListener("mouseup", handleGlobalMouseUp)
       window.removeEventListener("mousemove", handleGlobalMouseMove as any)
     }
-  }, [isDragging, onDrag])
+  }, [isDragging, isResizing, resizeDirection, width, height, position.x, position.y, onDrag, onResize])
 
   // Calculate styles based on maximized state
   const windowStyle = isMaximized
@@ -273,4 +315,3 @@ export function DraggableWindow({
     </div>
   )
 }
-

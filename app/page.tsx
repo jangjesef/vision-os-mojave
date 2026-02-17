@@ -151,7 +151,7 @@ export default function Home() {
 
   // Load saved state from localStorage on mount
   useEffect(() => {
-    const savedState = localStorage.getItem("studio-vision-desktop")
+    const savedState = localStorage.getItem("yung98-os-desktop")
     if (savedState) {
       try {
         const parsedState = JSON.parse(savedState) as AppState
@@ -177,12 +177,13 @@ export default function Home() {
 
   // Save state to localStorage when it changes
   useEffect(() => {
-    localStorage.setItem("studio-vision-desktop", JSON.stringify(appState))
+    localStorage.setItem("yung98-os-desktop", JSON.stringify(appState))
   }, [appState])
 
   const toggleWindow = (window: keyof typeof initialWindows) => {
     setAppState((prev) => {
-      const isOpening = !prev.windows[window].open
+      const targetWindow = prev.windows[window]!
+      const isOpening = !targetWindow.open
       let newActiveWindow = prev.activeWindow
 
       if (isOpening) {
@@ -202,9 +203,9 @@ export default function Home() {
         windows: {
           ...prev.windows,
           [window]: {
-            ...prev.windows[window],
-            open: !prev.windows[window].open,
-            zIndex: prev.windows[window].open ? prev.windows[window].zIndex : getHighestZIndex(prev.windows) + 1,
+            ...targetWindow,
+            open: !targetWindow.open,
+            zIndex: targetWindow.open ? targetWindow.zIndex : getHighestZIndex(prev.windows) + 1,
           },
         },
         activeWindow: newActiveWindow,
@@ -318,7 +319,7 @@ export default function Home() {
   }
 
   const handleLogin = (username: string, password: string) => {
-    if ((username === "studio" && password === "vision") || password === "vision") {
+    if ((username === "yung98" && password === "yung98") || password === "yung98") {
       setLoginError(null)
       setAppState((prev) => ({
         ...prev,
@@ -571,4 +572,3 @@ export default function Home() {
     </ContextMenuProvider>
   )
 }
-

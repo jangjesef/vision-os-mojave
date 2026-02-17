@@ -43,7 +43,7 @@ export function TerminalWindow({
   const { showContextMenu } = useContextMenu()
 
   // Mock file system
-  const fileSystem = {
+  const fileSystem: Record<string, string[]> = {
     "~": ["Documents", "Downloads", "Desktop", "Applications", ".bash_profile", ".zshrc"],
     "~/Documents": ["work", "personal", "report.pdf", "notes.txt"],
     "~/Downloads": ["image.png", "archive.zip", "installer.dmg"],
@@ -132,11 +132,11 @@ export function TerminalWindow({
     }
 
     // Add command to history
-    setHistory((prev) => [
-      ...prev,
-      { type: "input", content: getPrompt() + command },
-      ...(output ? [{ type: "output", content: output }] : []),
-    ])
+    const nextEntries: TerminalEntry[] = [{ type: "input", content: getPrompt() + command }]
+    if (output) {
+      nextEntries.push({ type: "output", content: output })
+    }
+    setHistory((prev) => [...prev, ...nextEntries])
 
     setCurrentInput("")
   }
@@ -269,4 +269,3 @@ export function TerminalWindow({
     </DraggableWindow>
   )
 }
-

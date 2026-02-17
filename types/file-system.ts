@@ -15,6 +15,7 @@ export interface FileItem {
 export interface FileSystem {
   items: Record<string, FileItem>
   desktop: string[]
+  beats: string[]
   documents: string[]
   downloads: string[]
   applications: string[]
@@ -31,18 +32,18 @@ export const initialFileSystem: FileSystem = {
   items: {
     "desktop-1": {
       id: "desktop-1",
-      name: "Welcome to Studio Vision",
+      name: "Welcome to YUNG98 OS",
       type: "file",
       parent: "desktop",
       extension: "txt",
       size: "2 KB",
       modified: new Date().toLocaleDateString(),
       content:
-        "Welcome to Studio Vision - Your Creative Partner!\n\nThis interactive portfolio showcases our services and creative work. To get started:\n\n1. Open the Finder to browse our portfolio\n2. Check out our Services in Safari\n3. Listen to our creative audio tracks in the Music Player\n4. Contact us using the Contact form\n\nWe look forward to working with you!",
+        "Welcome to YUNG98 OS - your interactive beat world.\n\nTo get started:\n\n1. Open Finder and dig through the beat vault\n2. Open Safari to browse the beat store\n3. Launch YUNG98 Player for previews\n4. Send a licensing or custom request from Contact\n\nLock in your next record.",
     },
     "desktop-2": {
       id: "desktop-2",
-      name: "Studio Vision Portfolio",
+      name: "YUNG98 Beat Vault",
       type: "folder",
       parent: "desktop",
       modified: new Date().toLocaleDateString(),
@@ -50,7 +51,7 @@ export const initialFileSystem: FileSystem = {
     },
     "desktop-3": {
       id: "desktop-3",
-      name: "Services Brochure",
+      name: "Beat Licensing Guide",
       type: "file",
       parent: "desktop",
       extension: "pdf",
@@ -59,9 +60,17 @@ export const initialFileSystem: FileSystem = {
       path: "/documents/services-brochure.pdf",
       icon: "/icons/pdf-icon.webp",
     },
+    "desktop-4": {
+      id: "desktop-4",
+      name: "Beats",
+      type: "folder",
+      parent: "desktop",
+      modified: new Date().toLocaleDateString(),
+      icon: "/icons/music.webp",
+    },
     "documents-1": {
       id: "documents-1",
-      name: "Studio Vision Brochure",
+      name: "YUNG98 OS Deck",
       type: "file",
       parent: "documents",
       extension: "pdf",
@@ -72,24 +81,24 @@ export const initialFileSystem: FileSystem = {
     },
     "documents-2": {
       id: "documents-2",
-      name: "Client Testimonials",
+      name: "Artist Notes",
       type: "file",
       parent: "documents",
       extension: "txt",
       size: "4 KB",
       modified: new Date().toLocaleDateString(),
       content:
-        '"Studio Vision transformed our brand with their exceptional design work. Their team was professional, creative, and delivered beyond our expectations." - Sarah J., Marketing Director\n\n"The photography services from Studio Vision helped us showcase our products in the best light. Sales have increased by 30% since our website update." - Michael T., E-commerce Manager\n\n"Working with Studio Vision on our corporate video was a seamless experience. They captured our company culture perfectly and the final product has been invaluable for our recruitment efforts." - David L., HR Director',
+        '"The YUNG98 beat gave my single the exact energy I needed. Mix-ready and clean bounce out the box." - LEXA\n\n"Fast response, smooth license process, and the beat hit hard in clubs." - KRO\n\n"Custom work came back with crazy detail and space for vocals. I am locking in again." - NERO',
     },
     "documents-3": {
       id: "documents-3",
-      name: "Service Catalog",
+      name: "Beat Catalog",
       type: "file",
       parent: "documents",
       extension: "pdf",
       size: "1.8 MB",
       modified: new Date().toLocaleDateString(),
-      path: "/documents/service-catalog.pdf",
+      path: "/documents/social-media-campaign.pdf",
       icon: "/icons/pdf-icon.webp",
     },
     "portfolio-1": {
@@ -198,7 +207,7 @@ export const initialFileSystem: FileSystem = {
       extension: "pdf",
       size: "5.2 MB",
       modified: new Date().toLocaleDateString(),
-      path: "/documents/branding-package.pdf",
+      path: "/documents/services-brochure.pdf",
       icon: "/icons/pdf-icon.webp",
       description: "Complete branding package including logo, color palette, typography, and usage guidelines.",
     },
@@ -232,7 +241,7 @@ export const initialFileSystem: FileSystem = {
       extension: "mp4",
       size: "18.5 MB",
       modified: new Date().toLocaleDateString(),
-      path: "/videos/commercial.mp4",
+      path: "/videos/event-highlight.mp4",
       description: "30-second commercial spot with professional voiceover, music, and motion graphics.",
     },
     "video-2": {
@@ -243,7 +252,7 @@ export const initialFileSystem: FileSystem = {
       extension: "mp4",
       size: "22.7 MB",
       modified: new Date().toLocaleDateString(),
-      path: "/videos/corporate-video.mp4",
+      path: "/videos/event-highlight.mp4",
       description: "Corporate overview video featuring interviews, b-roll, and professional narration.",
     },
     "video-3": {
@@ -254,7 +263,7 @@ export const initialFileSystem: FileSystem = {
       extension: "mp4",
       size: "12.3 MB",
       modified: new Date().toLocaleDateString(),
-      path: "/videos/social-media-content.mp4",
+      path: "/videos/event-highlight.mp4",
       description: "Short-form video content optimized for Instagram, TikTok, and other social platforms.",
     },
     "video-4": {
@@ -370,7 +379,8 @@ export const initialFileSystem: FileSystem = {
       modified: new Date().toLocaleDateString(),
     },
   },
-  desktop: ["desktop-1", "desktop-2", "desktop-3"],
+  desktop: ["desktop-1", "desktop-2", "desktop-3", "desktop-4"],
+  beats: [],
   documents: ["documents-1", "documents-2", "documents-3"],
   downloads: [],
   applications: ["applications-1", "applications-2", "applications-3", "applications-4"],
@@ -382,4 +392,3 @@ export const initialFileSystem: FileSystem = {
   marketing: ["marketing-1", "marketing-2", "marketing-3"],
   trash: [],
 }
-

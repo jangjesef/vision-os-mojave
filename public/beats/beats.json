@@ -1,0 +1,54 @@
+{
+  "16.02.v2.wav": {
+    "title": "16.02 v2",
+    "artist": "YUNG98",
+    "album": "YUNG98 Beat Vault",
+    "leasePrice": "$99",
+    "exclusivePrice": "$249",
+    "category": "trap",
+    "bpm": 142,
+    "key": "F# Minor",
+    "mood": "Dark Trap",
+    "cover": "/images/album-cover-1.jpg",
+    "description": "Dark trap bounce with wide synths and deep 808 movement."
+  },
+  "a.wav": {
+    "title": "A",
+    "artist": "YUNG98",
+    "album": "YUNG98 Beat Vault",
+    "leasePrice": "$99",
+    "exclusivePrice": "$249",
+    "category": "drill",
+    "bpm": 150,
+    "key": "A Minor",
+    "mood": "Drill",
+    "cover": "/images/album-cover-2.jpg",
+    "description": "Fast drill pocket for hard verses and energetic flows."
+  },
+  "pianolife.wav": {
+    "title": "Piano Life",
+    "artist": "YUNG98",
+    "album": "YUNG98 Beat Vault",
+    "leasePrice": "$99",
+    "exclusivePrice": "$249",
+    "category": "rnb",
+    "bpm": 128,
+    "key": "D Minor",
+    "mood": "Melodic",
+    "cover": "/images/album-cover-3.jpg",
+    "description": "Melodic piano-led bounce with warm low end and vocal space."
+  },
+  "terapiezamir3.wav": {
+    "title": "Terapie Zamir 3",
+    "artist": "YUNG98",
+    "album": "YUNG98 Beat Vault",
+    "leasePrice": "$99",
+    "exclusivePrice": "$249",
+    "category": "boom-bap",
+    "bpm": 96,
+    "key": "C Minor",
+    "mood": "Soulful",
+    "cover": "/images/album-cover-4.jpg",
+    "description": "Soulful boom-bap feel with punchy drums and gritty texture."
+  }
+}

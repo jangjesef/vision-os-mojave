@@ -55,9 +55,35 @@ interface Service {
   id: string
   name: string
   description: string
-  price: string
   image: string
   category: string
+  leasePrice: string
+  exclusivePrice: string
+}
+
+interface CartItem extends Service {
+  cartId: string
+  selectedLicense: "Lease" | "Exclusive"
+  price: string
+}
+
+interface RepoBeatFile {
+  name: string
+  path: string
+  extension: string
+  size: string
+  title?: string
+  artist?: string
+  album?: string
+  price?: string
+  leasePrice?: string
+  exclusivePrice?: string
+  category?: string
+  bpm?: number
+  key?: string
+  mood?: string
+  cover?: string
+  description?: string
 }
 
 // Add a tooltip component for guiding users
@@ -80,7 +106,7 @@ const ServiceTooltip = ({
   )
 }
 
-// Add a service category explanation component
+// Add a beat category explanation component
 const CategoryExplanation = ({
   category,
 }: {
@@ -88,46 +114,45 @@ const CategoryExplanation = ({
 }) => {
   const getCategoryInfo = () => {
     switch (category) {
-      case "photography":
+      case "trap":
         return {
-          title: "Photography Services",
+          title: "Trap Beats",
           description:
-            "Professional photography services for products, portraits, events, and more. Our photographers use state-of-the-art equipment to capture stunning images for your business.",
+            "Heavy 808s, dark melodies, and hard drums built for aggressive flows and club energy.",
           icon: <Camera className="h-6 w-6" />,
         }
-      case "design":
+      case "drill":
         return {
-          title: "Graphic Design Services",
+          title: "Drill Beats",
           description:
-            "Creative graphic design services including logo design, branding packages, print materials, and packaging design. Our designers create visually compelling assets for your brand.",
+            "Sliding bass, menacing bounce, and raw textures inspired by UK/NY drill movement.",
           icon: <Palette className="h-6 w-6" />,
         }
-      case "video":
+      case "rnb":
         return {
-          title: "Video Production Services",
+          title: "R&B Vibes",
           description:
-            "Professional video production services for commercials, corporate videos, social media content, and event coverage. Our videographers create engaging visual stories.",
+            "Smooth chord progressions, warm bass, and late-night bounce for melodic records.",
           icon: <Video className="h-6 w-6" />,
         }
-      case "web":
+      case "boom-bap":
         return {
-          title: "Web Development Services",
+          title: "Boom Bap",
           description:
-            "Custom web development services including e-commerce websites, corporate sites, and portfolio websites. Our developers build responsive, user-friendly web experiences.",
+            "Dusty drums, soul chops, and classic head-nod grooves for timeless rap cuts.",
           icon: <Globe className="h-6 w-6" />,
         }
-      case "marketing":
+      case "afro":
         return {
-          title: "Digital Marketing Services",
+          title: "Afro Bounce",
           description:
-            "Comprehensive digital marketing services including social media management, email marketing, and SEO strategies. Our marketers help grow your online presence.",
+            "Rhythmic bounce, bright percussion, and melodic pockets for global crossover records.",
           icon: <Megaphone className="h-6 w-6" />,
         }
       default:
         return {
-          title: "All Services",
-          description:
-            "Browse our complete range of creative services designed to help your business stand out. Select a category to see specialized offerings.",
+          title: "All Beats",
+          description: "Browse the full YUNG98 catalog, filter by vibe, and build your crate.",
           icon: <Smartphone className="h-6 w-6" />,
         }
     }
@@ -165,7 +190,7 @@ const CheckoutSteps = ({
           >
             <ShoppingCart className="h-4 w-4" />
           </div>
-          <span className="text-xs mt-1">Cart</span>
+          <span className="text-xs mt-1">Crate</span>
         </div>
 
         <div
@@ -180,7 +205,7 @@ const CheckoutSteps = ({
           >
             <CreditCard className="h-4 w-4" />
           </div>
-          <span className="text-xs mt-1">Checkout</span>
+          <span className="text-xs mt-1">License</span>
         </div>
 
         <div className={`w-12 h-0.5 ${currentStep === "confirmation" ? "bg-green-500" : "bg-gray-200"}`}></div>
@@ -200,25 +225,27 @@ const CheckoutSteps = ({
   )
 }
 
-// Add a service card component with hover effects
+// Add a beat card component with hover effects
 const ServiceCard = ({
   service,
   onAddToCart,
 }: {
   service: Service
-  onAddToCart: (service: Service) => void
+  onAddToCart: (service: Service, selectedLicense: "Lease" | "Exclusive") => void
 }) => {
+  const [selectedLicense, setSelectedLicense] = useState<"Lease" | "Exclusive">("Lease")
+
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case "photography":
+      case "trap":
         return <Camera className="h-5 w-5" />
-      case "design":
+      case "drill":
         return <Palette className="h-5 w-5" />
-      case "video":
+      case "rnb":
         return <Video className="h-5 w-5" />
-      case "web":
+      case "boom-bap":
         return <Globe className="h-5 w-5" />
-      case "marketing":
+      case "afro":
         return <Megaphone className="h-5 w-5" />
       default:
         return <Smartphone className="h-5 w-5" />
@@ -243,14 +270,38 @@ const ServiceCard = ({
         </div>
         <h3 className="text-xl font-bold text-gray-800 mb-2">{service.name}</h3>
         <p className="text-gray-600 mb-4">{service.description}</p>
-        <div className="flex justify-between items-center">
-          <span className="text-xl font-bold text-gray-800">{service.price}</span>
+        <div className="grid grid-cols-2 gap-2 mb-4">
           <button
-            onClick={() => onAddToCart(service)}
+            onClick={() => setSelectedLicense("Lease")}
+            className={`px-3 py-2 rounded-md text-sm font-medium border transition-colors ${
+              selectedLicense === "Lease"
+                ? "bg-emerald-100 text-emerald-700 border-emerald-300"
+                : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+            }`}
+          >
+            Lease {service.leasePrice}
+          </button>
+          <button
+            onClick={() => setSelectedLicense("Exclusive")}
+            className={`px-3 py-2 rounded-md text-sm font-medium border transition-colors ${
+              selectedLicense === "Exclusive"
+                ? "bg-amber-100 text-amber-700 border-amber-300"
+                : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+            }`}
+          >
+            Exclusive {service.exclusivePrice}
+          </button>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-xl font-bold text-gray-800">
+            {selectedLicense === "Lease" ? service.leasePrice : service.exclusivePrice}
+          </span>
+          <button
+            onClick={() => onAddToCart(service, selectedLicense)}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2 group"
           >
             <ShoppingCart className="h-4 w-4 group-hover:animate-bounce" />
-            <span>Add to Cart</span>
+            <span>Add {selectedLicense}</span>
           </button>
         </div>
       </div>
@@ -307,20 +358,21 @@ export function SafariWindow({
   const [tabs, setTabs] = useState<Tab[]>([
     {
       id: "tab1",
-      title: "Studio Vision - Services",
-      url: "https://studiovision.com/services",
+      title: "YUNG98 OS - Beat Store",
+      url: "https://yung98.com/beats",
       favicon: "/icons/studio-vision-favicon.png",
       isActive: true,
     },
   ])
 
-  const [inputUrl, setInputUrl] = useState("https://studiovision.com/services")
-  const [currentUrl, setCurrentUrl] = useState("https://studiovision.com/services")
+  const [inputUrl, setInputUrl] = useState("https://yung98.com/beats")
+  const [currentUrl, setCurrentUrl] = useState("https://yung98.com/beats")
   const [canGoBack, setCanGoBack] = useState(false)
   const [canGoForward, setCanGoForward] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState("all")
-  const [cart, setCart] = useState<Service[]>([])
+  const [services, setServices] = useState<Service[]>([])
+  const [cart, setCart] = useState<CartItem[]>([])
   const [showCart, setShowCart] = useState(false)
   const [showCheckout, setShowCheckout] = useState(false)
   const [checkoutSuccess, setCheckoutSuccess] = useState(false)
@@ -332,104 +384,64 @@ export function SafariWindow({
   const historyPosition = useRef<number>(0)
   const { showContextMenu } = useContextMenu()
 
-  const services: Service[] = [
-    {
-      id: "photo1",
-      name: "Product Photography",
-      description: "Professional product photography to showcase your items in the best light.",
-      price: "$299",
-      image: "/images/product-photography.jpg",
-      category: "photography",
-    },
-    {
-      id: "photo2",
-      name: "Portrait Session",
-      description: "Professional portrait photography for individuals or groups.",
-      price: "$199",
-      image: "/images/portrait-session.jpg",
-      category: "photography",
-    },
-    {
-      id: "photo3",
-      name: "Event Coverage",
-      description: "Comprehensive photography coverage for your special events.",
-      price: "$499",
-      image: "/images/event-coverage.jpg",
-      category: "photography",
-    },
-    {
-      id: "design1",
-      name: "Logo Design",
-      description: "Custom logo design with unlimited revisions until you're satisfied.",
-      price: "$349",
-      image: "/images/logo-design.png",
-      category: "design",
-    },
-    {
-      id: "design2",
-      name: "Branding Package",
-      description: "Complete branding package including logo, business cards, and style guide.",
-      price: "$799",
-      image: "/images/branding-package.jpg",
-      category: "design",
-    },
-    {
-      id: "design3",
-      name: "Print Materials",
-      description: "Design for brochures, flyers, posters, and other print materials.",
-      price: "$249",
-      image: "/images/print-materials.jpg",
-      category: "design",
-    },
-    {
-      id: "video1",
-      name: "Commercial Video",
-      description: "Professional commercial video production for your business.",
-      price: "$999",
-      image: "/images/commercial-video.jpg",
-      category: "video",
-    },
-    {
-      id: "video2",
-      name: "Corporate Video",
-      description: "Corporate video production for internal or external communications.",
-      price: "$1,299",
-      image: "/images/corporate-video.jpg",
-      category: "video",
-    },
-    {
-      id: "video3",
-      name: "Social Media Content",
-      description: "Short-form video content optimized for social media platforms.",
-      price: "$599",
-      image: "/images/social-media-video.jpg",
-      category: "video",
-    },
-    {
-      id: "web1",
-      name: "Website Design",
-      description: "Custom website design with responsive layouts for all devices.",
-      price: "$1,499",
-      image: "/images/website-design.jpg",
-      category: "web",
-    },
-    {
-      id: "web2",
-      name: "E-commerce Development",
-      description: "Full e-commerce website development with payment processing.",
-      price: "$2,499",
-      image: "/images/ecommerce-development.jpg",
-      category: "web",
-    },
-    {
-      id: "marketing1",
-      name: "Social Media Management",
-      description: "Monthly social media management across multiple platforms.",
-      price: "$599/mo",
-      image: "/images/social-media-management.jpg",
-      category: "marketing",
-    },
-  ]
+  const parsePrice = (price: string) => Number.parseFloat(price.replace(/[^\d.]/g, "")) || 0
+  const defaultLeasePrice = "$99"
+  const defaultExclusivePrice = "$249"
+
+  const toBeatTitle = (fileName: string) => {
+    const baseName = fileName.replace(/\.[^.]+$/, "")
+    return baseName
+      .replace(/[._-]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .replace(/\b\w/g, (char) => char.toUpperCase())
+  }
+
+  const detectCategory = (fileName: string, index: number) => {
+    const name = fileName.toLowerCase()
+    if (name.includes("drill")) return "drill"
+    if (name.includes("rnb") || name.includes("piano")) return "rnb"
+    if (name.includes("boom") || name.includes("bap")) return "boom-bap"
+    if (name.includes("afro") || name.includes("dance")) return "afro"
+    const fallback = ["trap", "drill", "rnb", "boom-bap", "afro"]
+    return fallback[index % fallback.length]
+  }
+
+  useEffect(() => {
+    const loadBeatsForStore = async () => {
+      try {
+        const response = await fetch("/api/beats")
+        if (!response.ok) {
+          return
+        }
+
+        const data = (await response.json()) as { beats?: RepoBeatFile[] }
+        const beats = data.beats ?? []
+
+        const mapped = beats.map((beat, index) => {
+          const fallbackLease = beat.leasePrice || beat.price || defaultLeasePrice
+          const fallbackExclusive = beat.exclusivePrice || defaultExclusivePrice
+
+          return {
+            id: `beat-${index + 1}`,
+            name: beat.title || toBeatTitle(beat.name),
+            description:
+              beat.description || `${beat.extension.toUpperCase()} preview from /public/beats (${beat.size}).`,
+            image: beat.cover || `/images/album-cover-${(index % 4) + 1}.jpg`,
+            category: beat.category || detectCategory(beat.name, index),
+            leasePrice: beat.leasePrice || fallbackLease,
+            exclusivePrice: beat.exclusivePrice || fallbackExclusive,
+          }
+        })
+
+        setServices(mapped)
+      } catch (error) {
+        console.error("Failed to load beat store items:", error)
+      }
+    }
+
+    loadBeatsForStore()
+  }, [])
 
   const filteredServices =
     selectedCategory === "all" ? services : services.filter((service) => service.category === selectedCategory)
@@ -647,13 +659,21 @@ export function SafariWindow({
     })
   }
 
-  const addToCart = (service: Service) => {
-    setCart([...cart, service])
-    setCartNotification({ show: true, message: `${service.name} added to cart!` })
+  const addToCart = (service: Service, selectedLicense: "Lease" | "Exclusive") => {
+    const selectedPrice = selectedLicense === "Lease" ? service.leasePrice : service.exclusivePrice
+    const cartItem: CartItem = {
+      ...service,
+      cartId: `${service.id}-${selectedLicense}-${Date.now()}`,
+      selectedLicense,
+      price: selectedPrice,
+    }
+
+    setCart((prev) => [...prev, cartItem])
+    setCartNotification({ show: true, message: `${service.name} (${selectedLicense}) added to crate!` })
   }
 
-  const removeFromCart = (serviceId: string) => {
-    setCart(cart.filter((item) => item.id !== serviceId))
+  const removeFromCart = (cartId: string) => {
+    setCart((prev) => prev.filter((item) => item.cartId !== cartId))
   }
 
   const handleCheckout = () => {
@@ -793,23 +813,23 @@ export function SafariWindow({
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1 hover:text-white cursor-default">
               <img src="/icons/studio-vision-favicon.png" alt="" className="w-3 h-3" />
-              <span>Studio Vision</span>
+              <span>YUNG98</span>
             </div>
             <div className="flex items-center gap-1 hover:text-white cursor-default">
               <Camera className="w-3 h-3" />
-              <span>Photography</span>
+              <span>Trap</span>
             </div>
             <div className="flex items-center gap-1 hover:text-white cursor-default">
               <Palette className="w-3 h-3" />
-              <span>Design</span>
+              <span>Drill</span>
             </div>
             <div className="flex items-center gap-1 hover:text-white cursor-default">
               <Video className="w-3 h-3" />
-              <span>Video</span>
+              <span>R&B</span>
             </div>
             <div className="flex items-center gap-1 hover:text-white cursor-default">
               <Calendar className="w-3 h-3" />
-              <span>Book Now</span>
+              <span>License</span>
             </div>
           </div>
           <div className="ml-auto">
@@ -843,7 +863,7 @@ export function SafariWindow({
             </div>
           ) : (
             <div className="w-full h-full bg-[#f5f5f7] overflow-auto" onContextMenu={handleSafariContextMenu}>
-              {/* Services Page Content */}
+              {/* Beat Store Page Content */}
               <div className="max-w-6xl mx-auto p-6">
                 {cartNotification.show && (
                   <CartNotification
@@ -854,7 +874,7 @@ export function SafariWindow({
                 )}
                 {showTooltip && (
                   <ServiceTooltip
-                    message="Explore our services and add them to your cart!"
+                    message="Preview beats, filter by vibe, and add favorites to your crate."
                     onClose={() => setShowTooltip(false)}
                   />
                 )}
@@ -866,9 +886,9 @@ export function SafariWindow({
                         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
                           <Check className="h-8 w-8 text-green-500" />
                         </div>
-                        <h2 className="text-2xl font-bold text-gray-800 mb-2">Thank You for Your Order!</h2>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-2">License Request Received</h2>
                         <p className="text-gray-600 mb-6 text-center">
-                          Your order has been placed successfully. We'll contact you shortly to discuss the details.
+                          Your beat request is in. I will contact you shortly with license details and delivery info.
                         </p>
                         <button
                           onClick={() => {
@@ -877,19 +897,19 @@ export function SafariWindow({
                           }}
                           className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                         >
-                          Continue Shopping
+                          Back to Catalog
                         </button>
                       </div>
                     ) : (
                       <div>
-                        <h2 className="text-2xl font-bold text-gray-800 mb-6">Checkout</h2>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6">Licensing Request</h2>
 
                         <div className="mb-6">
-                          <h3 className="text-lg font-semibold mb-3">Order Summary</h3>
+                          <h3 className="text-lg font-semibold mb-3">Beat Summary</h3>
                           <div className="border-t border-b border-gray-200 py-4 mb-4">
-                            {cart.map((item, index) => (
-                              <div key={index} className="flex justify-between items-center mb-2">
-                                <span className="text-gray-700">{item.name}</span>
+                            {cart.map((item) => (
+                              <div key={item.cartId} className="flex justify-between items-center mb-2">
+                                <span className="text-gray-700">{item.name} ({item.selectedLicense})</span>
                                 <span className="font-medium">{item.price}</span>
                               </div>
                             ))}
@@ -899,8 +919,7 @@ export function SafariWindow({
                             <span>
                               {cart
                                 .reduce((total, item) => {
-                                  const price = item.price.replace(/[^\d.]/g, "")
-                                  return total + Number.parseFloat(price)
+                                  return total + parsePrice(item.price)
                                 }, 0)
                                 .toLocaleString("en-US", { style: "currency", currency: "USD" })}
                             </span>
@@ -931,39 +950,39 @@ export function SafariWindow({
                           </div>
 
                           <div>
-                            <h3 className="text-lg font-semibold mb-3">Billing Information</h3>
+                            <h3 className="text-lg font-semibold mb-3">License Information</h3>
                             <div className="space-y-3">
                               <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Name on Card</label>
+                                 <label className="block text-sm font-medium text-gray-700 mb-1">Artist Name</label>
                                 <input
                                   type="text"
                                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                  placeholder="John Doe"
+                                   placeholder="Your artist name"
                                 />
                               </div>
                               <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
+                                 <label className="block text-sm font-medium text-gray-700 mb-1">Preferred License</label>
                                 <input
                                   type="text"
                                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                  placeholder="**** **** **** ****"
+                                   placeholder="Non-Exclusive / Exclusive"
                                 />
                               </div>
                               <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                  <label className="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
+                                   <label className="block text-sm font-medium text-gray-700 mb-1">Release Timeline</label>
                                   <input
                                     type="text"
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="MM/YY"
+                                     placeholder="This month / Next quarter"
                                   />
                                 </div>
                                 <div>
-                                  <label className="block text-sm font-medium text-gray-700 mb-1">CVC</label>
+                                   <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
                                   <input
                                     type="text"
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="123"
+                                     placeholder="Any details"
                                   />
                                 </div>
                               </div>
@@ -982,7 +1001,7 @@ export function SafariWindow({
                             onClick={completeCheckout}
                             className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                           >
-                            Complete Order
+                             Submit Request
                           </button>
                         </div>
                       </div>
@@ -992,7 +1011,7 @@ export function SafariWindow({
                   <div className="bg-white rounded-lg shadow-lg p-6">
                     <CheckoutSteps currentStep="cart" />
                     <div className="flex justify-between items-center mb-6">
-                      <h2 className="text-2xl font-bold text-gray-800">Your Cart</h2>
+                      <h2 className="text-2xl font-bold text-gray-800">Your Crate</h2>
                       <button onClick={() => setShowCart(false)} className="text-gray-500 hover:text-gray-700">
                         <X className="h-5 w-5" />
                       </button>
@@ -1001,22 +1020,22 @@ export function SafariWindow({
                     {cart.length === 0 ? (
                       <div className="text-center py-10">
                         <ShoppingCart className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-700 mb-2">Your cart is empty</h3>
+                        <h3 className="text-lg font-medium text-gray-700 mb-2">Your crate is empty</h3>
                         <p className="text-gray-500 mb-6">
-                          Looks like you haven't added any services to your cart yet.
+                          Add a few beats and build your shortlist.
                         </p>
                         <button
                           onClick={() => setShowCart(false)}
                           className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                         >
-                          Browse Services
+                          Browse Beats
                         </button>
                       </div>
                     ) : (
                       <>
                         <div className="border-t border-b border-gray-200 py-4 mb-6">
-                          {cart.map((item, index) => (
-                            <div key={index} className="flex items-center justify-between py-3">
+                          {cart.map((item) => (
+                            <div key={item.cartId} className="flex items-center justify-between py-3">
                               <div className="flex items-center">
                                 <div className="w-16 h-16 rounded-md overflow-hidden mr-4">
                                   <img
@@ -1028,12 +1047,13 @@ export function SafariWindow({
                                 <div>
                                   <h4 className="font-medium text-gray-800">{item.name}</h4>
                                   <p className="text-sm text-gray-500">{item.category}</p>
+                                  <p className="text-xs text-gray-500">{item.selectedLicense}</p>
                                 </div>
                               </div>
                               <div className="flex items-center">
                                 <span className="font-medium text-gray-800 mr-4">{item.price}</span>
                                 <button
-                                  onClick={() => removeFromCart(item.id)}
+                                  onClick={() => removeFromCart(item.cartId)}
                                   className="text-red-500 hover:text-red-700"
                                 >
                                   <X className="h-5 w-5" />
@@ -1049,8 +1069,7 @@ export function SafariWindow({
                             <p className="text-xl font-bold text-gray-800">
                               {cart
                                 .reduce((total, item) => {
-                                  const price = item.price.replace(/[^\d.]/g, "")
-                                  return total + Number.parseFloat(price)
+                                  return total + parsePrice(item.price)
                                 }, 0)
                                 .toLocaleString("en-US", { style: "currency", currency: "USD" })}
                             </p>
@@ -1059,7 +1078,7 @@ export function SafariWindow({
                             onClick={handleCheckout}
                             className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                           >
-                            Proceed to Checkout
+                            Continue to Licensing
                           </button>
                         </div>
 
@@ -1067,7 +1086,7 @@ export function SafariWindow({
                           onClick={() => setShowCart(false)}
                           className="text-blue-600 hover:text-blue-800 transition-colors"
                         >
-                          Continue Shopping
+                          Keep Browsing
                         </button>
                       </>
                     )}
@@ -1075,10 +1094,9 @@ export function SafariWindow({
                 ) : (
                   <>
                     <div className="text-center mb-12">
-                      <h1 className="text-4xl font-bold text-gray-800 mb-4">Our Services</h1>
+                      <h1 className="text-4xl font-bold text-gray-800 mb-4">YUNG98 Beat Store</h1>
                       <p className="text-gray-600 max-w-2xl mx-auto">
-                        Studio Vision offers a comprehensive range of creative services to help your business stand out.
-                        Browse our offerings and select the services that best fit your needs.
+                        Explore the current catalog, preview standout beats, and request the right license for your next release.
                       </p>
                     </div>
 
@@ -1093,82 +1111,88 @@ export function SafariWindow({
                           }`}
                         >
                           <Smartphone className="h-4 w-4" />
-                          <span>All Services</span>
+                           <span>All Beats</span>
                         </button>
                         <button
-                          onClick={() => setSelectedCategory("photography")}
+                           onClick={() => setSelectedCategory("trap")}
                           className={`px-4 py-2 rounded-full flex items-center gap-2 ${
-                            selectedCategory === "photography"
+                             selectedCategory === "trap"
                               ? "bg-blue-600 text-white"
                               : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                           }`}
                         >
                           <Camera className="h-4 w-4" />
-                          <span>Photography</span>
+                           <span>Trap</span>
                         </button>
                         <button
-                          onClick={() => setSelectedCategory("design")}
+                           onClick={() => setSelectedCategory("drill")}
                           className={`px-4 py-2 rounded-full flex items-center gap-2 ${
-                            selectedCategory === "design"
+                             selectedCategory === "drill"
                               ? "bg-blue-600 text-white"
                               : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                           }`}
                         >
                           <Palette className="h-4 w-4" />
-                          <span>Design</span>
+                           <span>Drill</span>
                         </button>
                         <button
-                          onClick={() => setSelectedCategory("video")}
+                           onClick={() => setSelectedCategory("rnb")}
                           className={`px-4 py-2 rounded-full flex items-center gap-2 ${
-                            selectedCategory === "video"
+                             selectedCategory === "rnb"
                               ? "bg-blue-600 text-white"
                               : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                           }`}
                         >
                           <Video className="h-4 w-4" />
-                          <span>Video</span>
+                           <span>R&B</span>
                         </button>
                         <button
-                          onClick={() => setSelectedCategory("web")}
+                           onClick={() => setSelectedCategory("boom-bap")}
                           className={`px-4 py-2 rounded-full flex items-center gap-2 ${
-                            selectedCategory === "web"
+                             selectedCategory === "boom-bap"
                               ? "bg-blue-600 text-white"
                               : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                           }`}
                         >
                           <Globe className="h-4 w-4" />
-                          <span>Web</span>
+                           <span>Boom Bap</span>
                         </button>
                         <button
-                          onClick={() => setSelectedCategory("marketing")}
+                           onClick={() => setSelectedCategory("afro")}
                           className={`px-4 py-2 rounded-full flex items-center gap-2 ${
-                            selectedCategory === "marketing"
+                             selectedCategory === "afro"
                               ? "bg-blue-600 text-white"
                               : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                           }`}
                         >
                           <Megaphone className="h-4 w-4" />
-                          <span>Marketing</span>
+                           <span>Afro</span>
                         </button>
                       </div>
 
                       <CategoryExplanation category={selectedCategory} />
 
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredServices.map((service) => (
-                          <ServiceCard key={service.id} service={service} onAddToCart={addToCart} />
-                        ))}
+                        {filteredServices.length === 0 ? (
+                          <div className="col-span-full bg-white rounded-lg shadow-md p-8 text-center text-gray-600">
+                            No beats in this category yet. Add files to `public/beats` or switch filter.
+                          </div>
+                        ) : (
+                          filteredServices.map((service) => (
+                            <ServiceCard key={service.id} service={service} onAddToCart={addToCart} />
+                          ))
+                        )}
                       </div>
                     </div>
 
                     <div className="bg-gray-100 rounded-lg p-8 text-center">
-                      <h2 className="text-2xl font-bold text-gray-800 mb-4">Need a Custom Solution?</h2>
+                      <h2 className="text-2xl font-bold text-gray-800 mb-4">Need a Custom Beat?</h2>
                       <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-                        Don't see exactly what you're looking for? We offer custom packages tailored to your specific
-                        needs. Contact us to discuss your project requirements.
+                        If you need a custom vibe, arrangement, or full production package, send a request and we can
+                        build your sound from scratch.
                       </p>
                       <button className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-                        Contact Us
+                        Book With YUNG98
                       </button>
                     </div>
                   </>
@@ -1181,4 +1205,3 @@ export function SafariWindow({
     </DraggableWindow>
   )
 }
-

@@ -4,7 +4,7 @@ import { Check, ChevronRight } from "lucide-react"
 
 export interface MenuItem {
   id: string
-  label: string
+  label?: string
   shortcut?: string
   action?: () => void
   submenu?: MenuItem[]
@@ -84,4 +84,3 @@ export function MenuDropdown({
     </div>
   )
 }
-

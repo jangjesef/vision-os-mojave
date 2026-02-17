@@ -57,9 +57,9 @@ export function MacOSDesktop({ children }: MacOSDesktopProps) {
           },
           { divider: true },
           {
-            label: "About Studio Vision",
+            label: "About YUNG98 OS",
             icon: <Info className="h-4 w-4" />,
-            onClick: () => console.log("About Studio Vision clicked"),
+            onClick: () => console.log("About YUNG98 OS clicked"),
           },
         ],
         x: e.clientX,
@@ -116,9 +116,9 @@ export function MacOSDesktop({ children }: MacOSDesktopProps) {
               <Info className="h-5 w-5 text-blue-400" />
             </div>
             <div>
-              <h3 className="font-medium mb-1">Welcome to Studio Vision</h3>
+              <h3 className="font-medium mb-1">Welcome to YUNG98 OS</h3>
               <p className="text-sm text-white/80 max-w-md">
-                Click on the Finder icon in the dock to browse our portfolio, or use Safari to explore our services.
+                Click the Finder icon to crate-dig your catalog, or open Safari to browse YUNG98 beats.
               </p>
             </div>
           </div>
@@ -129,7 +129,7 @@ export function MacOSDesktop({ children }: MacOSDesktopProps) {
         <DesktopIcon
           file={{
             id: "macintosh-hd",
-            name: "Studio Vision",
+            name: "YUNG98",
             type: "folder",
             parent: "root",
             icon: "/icons/studio-vision-icon.webp",
@@ -147,4 +147,3 @@ export function MacOSDesktop({ children }: MacOSDesktopProps) {
     </div>
   )
 }
-

@@ -67,7 +67,7 @@ export function Dock({
     },
     {
       icon: "/icons/safari.webp",
-      name: "Services",
+      name: "Beat Store",
       onClick: onSafariClick,
       isActive: activeWindows.safari,
       contextMenu: (x: number, y: number) => {
@@ -100,7 +100,7 @@ export function Dock({
           ],
           x,
           y,
-          title: "Services",
+          title: "Beat Store",
         })
       },
     },
@@ -184,7 +184,7 @@ export function Dock({
     },
     {
       icon: "/icons/mail.webp",
-      name: "Contact Us",
+      name: "Book Session",
       onClick: onContactFormClick,
       isActive: activeWindows.contactForm,
       contextMenu: (x: number, y: number) => {
@@ -217,7 +217,7 @@ export function Dock({
           ],
           x,
           y,
-          title: "Contact Us",
+          title: "Book Session",
         })
       },
     },
@@ -290,4 +290,3 @@ export function Dock({
     </div>
   )
 }
-

@@ -30,8 +30,8 @@ export const finderMenus = [
       { id: "divider3", divider: true },
       {
         id: "services",
-        label: "Services",
-        submenu: [{ id: "no-services", label: "No Services Apply", disabled: true }],
+        label: "Beats",
+        submenu: [{ id: "no-services", label: "No Beat Actions", disabled: true }],
       },
       { id: "divider4", divider: true },
       { id: "hide-finder", label: "Hide Finder", shortcut: "⌘H", action: () => console.log("Hide Finder") },
@@ -236,8 +236,8 @@ export const safariMenus = [
       { id: "divider3", divider: true },
       {
         id: "services",
-        label: "Services",
-        submenu: [{ id: "no-services", label: "No Services Apply", disabled: true }],
+        label: "Beats",
+        submenu: [{ id: "no-services", label: "No Beat Actions", disabled: true }],
       },
       { id: "divider4", divider: true },
       { id: "hide-safari", label: "Hide Safari", shortcut: "⌘H", action: () => console.log("Hide Safari") },
@@ -544,8 +544,8 @@ export const terminalMenus = [
       { id: "divider2", divider: true },
       {
         id: "services",
-        label: "Services",
-        submenu: [{ id: "no-services", label: "No Services Apply", disabled: true }],
+        label: "Beats",
+        submenu: [{ id: "no-services", label: "No Beat Actions", disabled: true }],
       },
       { id: "divider3", divider: true },
       { id: "hide-terminal", label: "Hide Terminal", shortcut: "⌘H", action: () => console.log("Hide Terminal") },
@@ -705,8 +705,8 @@ export const systemPreferencesMenus = [
       { id: "divider1", divider: true },
       {
         id: "services",
-        label: "Services",
-        submenu: [{ id: "no-services", label: "No Services Apply", disabled: true }],
+        label: "Beats",
+        submenu: [{ id: "no-services", label: "No Beat Actions", disabled: true }],
       },
       { id: "divider2", divider: true },
       {
@@ -799,8 +799,8 @@ export const defaultMenus = [
       { id: "divider3", divider: true },
       {
         id: "services",
-        label: "Services",
-        submenu: [{ id: "no-services", label: "No Services Apply", disabled: true }],
+        label: "Beats",
+        submenu: [{ id: "no-services", label: "No Beat Actions", disabled: true }],
       },
     ],
   },
@@ -882,4 +882,3 @@ export const defaultMenus = [
     items: [{ id: "macos-help", label: "macOS Help", action: () => console.log("macOS Help") }],
   },
 ]
-
